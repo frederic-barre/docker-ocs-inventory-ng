@@ -1,14 +1,18 @@
 FROM centos:6
-MAINTAINER Ming Hsieh <zanhsieh@gmail.com>
+# MAINTAINER Ming Hsieh <zanhsieh@gmail.com>
+MAINTAINER Frederic Barre
 
 RUN yum -y install epel-release ;\
     yum -y update ;\
-    yum -y install tar gzip make httpd mysql mysql-server php php-mysql php-gd php-pecl-memcache php-pspell php-snmp php-xmlrpc php-xml php-mbstring php-pecl-zip python-pip perl-XML-Simple perl-Compress-Zlib perl-DBI perl-DBD-MySQL perl-Apache-DBI perl-Net-IP perl-SOAP-Lite mod_perl;\
+    yum -y install wget tar gzip make httpd php php-mysql php-gd php-pecl-memcache php-pspell php-snmp php-xmlrpc php-xml php-mbstring php-pecl-zip python-pip perl-XML-Simple perl-Compress-Zlib perl-DBI perl-DBD-MySQL perl-Apache-DBI perl-Net-IP perl-SOAP-Lite mod_perl;\
     yum clean all
 
-ADD OCSNG_UNIX_SERVER-2.1.2.tar.gz /tmp/
+# ADD OCSNG_UNIX_SERVER-2.1.2.tar.gz /tmp/
+cd /tmp
+wget --no-check-certificate https://launchpad.net/ocsinventory-server/stable-2.2/2.2beta1/+download/OCSNG_UNIX_SERVER-2.2beta1.tar.gz
+tar xvzf OCSNG_UNIX_SERVER-2.2beta1.tar.gz
 ADD s6-1.1.3.2-musl-static.tar.xz /
-RUN cd /tmp/OCSNG_UNIX_SERVER-2.1.2/Apache/ ;\
+RUN cd /tmp/OCSNG_UNIX_SERVER-2.2beta1/Apache/ ;\
     perl Makefile.PL ;\
     make ;\
     make install ;\
@@ -32,7 +36,7 @@ COPY init_db.sh ocsweb.sql /tmp/
 RUN chmod +w /usr/share/ocsinventory-reports/ocsreports/dbconfig.inc.php ;\
     chmod +x /tmp/init_db.sh; \
     /tmp/init_db.sh; \
-    rm -fR /tmp/OCSNG_UNIX_SERVER-2.1.2
+    rm -fR /tmp/OCSNG_UNIX_SERVER-2.2beta1
 
 EXPOSE 80 3306
 
